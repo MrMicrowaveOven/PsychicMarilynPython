@@ -1,9 +1,11 @@
 import requests
 import json
 
-import pdb
+import time
+from time import sleep
 
 import env_vars
+
 
 def get_train_data():
     json = requests.get('http://api.bart.gov/api/etd.aspx?key=MW9S-E7SL-26DU-VV8V&json=y&cmd=etd&orig=12TH&plat=2').json()
@@ -39,19 +41,32 @@ def get_train_data():
         'all_trains': all_train_data
     }
 
-    # pdb.set_trace()
     return data_obj
 
-print get_train_data()
-
-# print env_vars.HUE_AUTH
-
 def start_reading():
-    train_data = get_train_data
+    while True:
+        train_data = get_train_data()
+        next_reachable_train = train_data['next_reachable_train']
+        print train_data
+        # print next_reachable_train3
+        if next_reachable_train >= 8 and next_reachable_train < 11:
+            turn_green()
+        elif next_reachable_train >= 11 and next_reachable_train < 13:
+            turn_yellow()
+        else:
+            turn_red()
+        sleep(15)
 
 def turn_red():
-    print "Hi"
-def turn_purple():
-    print "Hi"
-def turn_blue():
-    print "Hi"
+    print "turning red"
+    r = requests.put(env_vars.HUE_PUT_LINK, json.dumps({"on":True, "sat":254, "bri":254,"hue":1000}))
+    print r.content
+def turn_yellow():
+    print "turning yellow"
+    r = requests.put(env_vars.HUE_PUT_LINK, json.dumps({"on":True, "sat":254, "bri":254,"hue":10000}))
+    print r.content
+def turn_green():
+    print "turning green"
+    r = requests.put(env_vars.HUE_PUT_LINK, json.dumps({"on":True, "sat":254, "bri":254,"hue":20000}))
+    print r.content
+start_reading()
