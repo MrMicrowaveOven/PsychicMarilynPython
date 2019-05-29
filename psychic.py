@@ -13,14 +13,21 @@ def get_train_data():
 
     all_train_data = {}
     for destination in etds_of_correct_routes:
-        min_etds = map(lambda x: int(x['minutes']), destination['estimate'])
+        estimates = destination['estimate']
+        min_etds = []
+        for estimate in estimates:
+            if estimate['minutes'].isdigit():
+                # estimate = filter(lambda x: x['minutes'].isdigit(), estimate)
+                min_etds.append(int(estimate['minutes']))
+
         all_train_data[destination['destination']] = min_etds
 
     etds_in_minutes = []
 
     for arr in valid_etds:
         for x in arr:
-            etds_in_minutes.append(int(x['minutes']))
+            if x['minutes'].isdigit():
+                etds_in_minutes.append(int(x['minutes']))
 
     etds_in_minutes.sort()
 
@@ -36,3 +43,15 @@ def get_train_data():
     return data_obj
 
 print get_train_data()
+
+# print env_vars.HUE_AUTH
+
+def start_reading():
+    train_data = get_train_data
+
+def turn_red():
+    print "Hi"
+def turn_purple():
+    print "Hi"
+def turn_blue():
+    print "Hi"
