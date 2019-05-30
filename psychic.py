@@ -43,18 +43,24 @@ def get_train_data():
 
     return data_obj
 
+def is_light_on():
+    r = requests.get(env_vars.HUE_GET_LINK)
+    return json.loads(r.content)['state']['on']
+    # print r.content.json()['state']['on']
+
 def start_reading():
     while True:
-        train_data = get_train_data()
-        next_reachable_train = train_data['next_reachable_train']
-        print train_data
-        # print next_reachable_train3
-        if next_reachable_train >= 8 and next_reachable_train < 11:
-            turn_green()
-        elif next_reachable_train >= 11 and next_reachable_train < 13:
-            turn_yellow()
-        else:
-            turn_red()
+        if is_light_on():
+            train_data = get_train_data()
+            next_reachable_train = train_data['next_reachable_train']
+            print train_data
+            # print next_reachable_train3
+            if next_reachable_train >= 8 and next_reachable_train < 11:
+                turn_green()
+            elif next_reachable_train >= 11 and next_reachable_train < 13:
+                turn_yellow()
+            else:
+                turn_red()
         sleep(15)
 
 def turn_red():
