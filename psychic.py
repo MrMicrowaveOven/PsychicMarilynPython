@@ -54,15 +54,20 @@ def start_reading():
             train_data = get_train_data()
             next_reachable_train = train_data['next_reachable_train']
             print train_data
-            # print next_reachable_train3
-            if next_reachable_train >= 8 and next_reachable_train < 11:
-                turn_green()
-            elif next_reachable_train >= 11 and next_reachable_train < 13:
-                turn_yellow()
+            if next_reachable_train >= 8 and next_reachable_train < 12:
+                turn_color(10000 + (3875 * (12 - next_reachable_train)))
+                # turn_green()
+            elif next_reachable_train >= 12 and next_reachable_train < 15:
+                turn_color(1000 + (3000 * (15 - next_reachable_train)))
+                # turn_yellow()
             else:
                 turn_red()
-        sleep(15)
+        sleep(6)
 
+def turn_color(color_num):
+    print "turning " + str(color_num)
+    r = requests.put(env_vars.HUE_PUT_LINK, json.dumps({"on":True, "sat":254, "bri":254,"hue":color_num}))
+    print r.content
 def turn_red():
     print "turning red"
     r = requests.put(env_vars.HUE_PUT_LINK, json.dumps({"on":True, "sat":254, "bri":254,"hue":1000}))
